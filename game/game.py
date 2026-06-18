@@ -587,9 +587,6 @@ class Game(arcade.Window):
             self.current_bubble.draw()
             self.current_bubble.x, self.current_bubble.y = ox, oy
 
-        if self.next_bubble:
-            self.ui.draw_next_bubble(self.next_bubble.color)
-
     def on_draw(self):
 
         self.clear()
@@ -627,12 +624,18 @@ class Game(arcade.Window):
             warning,
         )
 
-        self.ui.draw_bottom_hud(
-            self.stage.current_level(),
-            self.stage.current_stage,
+        self.ui.draw_left_score_hud(
             self.stage.score_goal(),
             self.score.score,
         )
+
+        self.ui.draw_bottom_hud(
+            self.stage.current_level(),
+            self.stage.current_stage,
+        )
+
+        if self.next_bubble:
+            self.ui.draw_left_bottom_hud(self.next_bubble.color)
 
         if self.state == GameState.PLAYING and not self.pending_stage_clear:
             self.ui.draw_pause_button()

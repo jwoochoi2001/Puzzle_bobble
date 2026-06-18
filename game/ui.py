@@ -867,7 +867,7 @@ class UI:
                 bold=True,
             )
 
-    def draw_bottom_hud(self, level, stage, goal_score, current_score):
+    def draw_bottom_hud(self, level, stage):
 
         arcade.draw_lrbt_rectangle_filled(
             PLAYFIELD_LEFT + 50,
@@ -897,21 +897,88 @@ class UI:
             bold=True,
         )
 
+    def draw_left_score_hud(self, goal_score, current_score):
+
+        left = 6
+        right = PLAYFIELD_LEFT - 22
+        top = HEIGHT - 112 - 6
+        bottom = top - 54
+        cx = (left + right) / 2
+
+        arcade.draw_lrbt_rectangle_filled(
+            left, right, bottom, top, (16, 24, 48),
+        )
+        arcade.draw_lrbt_rectangle_outline(
+            left, right, bottom, top, FRAME_TEAL, 2,
+        )
+
         remain = max(0, goal_score - current_score)
         arcade.draw_text(
             f"GOAL {format_score(goal_score)}",
-            PLAYFIELD_LEFT + 12,
-            PLAYFIELD_BOTTOM - 44,
+            cx,
+            top - 18,
             arcade.color.CYAN,
-            12,
+            13,
+            anchor_x="center",
             bold=True,
         )
         arcade.draw_text(
             f"남은 {format_score(remain)}",
-            PLAYFIELD_LEFT + 12,
-            PLAYFIELD_BOTTOM - 58,
-            arcade.color.LIGHT_GRAY,
-            10,
+            cx,
+            top - 38,
+            arcade.color.YELLOW,
+            14,
+            anchor_x="center",
+            bold=True,
+        )
+
+    def draw_left_bottom_hud(self, next_color):
+
+        panel_left = 6
+        panel_right = PLAYFIELD_LEFT - 24
+        panel_bottom = 105
+        panel_top = 198
+        cx = (panel_left + panel_right) / 2
+
+        arcade.draw_lrbt_rectangle_filled(
+            panel_left,
+            panel_right,
+            panel_bottom,
+            panel_top,
+            (16, 24, 48),
+        )
+        arcade.draw_lrbt_rectangle_outline(
+            panel_left,
+            panel_right,
+            panel_bottom,
+            panel_top,
+            FRAME_TEAL,
+            2,
+        )
+
+        preview_r = BUBBLE_RADIUS + 2
+        bubble_y = panel_bottom + 42
+
+        arcade.draw_text(
+            "NEXT",
+            cx,
+            bubble_y + preview_r + 16,
+            arcade.color.WHITE,
+            14,
+            anchor_x="center",
+            bold=True,
+        )
+
+        arcade.draw_circle_filled(cx, bubble_y, preview_r, next_color)
+        arcade.draw_circle_outline(
+            cx, bubble_y, preview_r, arcade.color.WHITE, 2,
+        )
+        hi = max(3, preview_r // 3)
+        arcade.draw_circle_filled(
+            cx - hi * 0.35,
+            bubble_y + hi * 0.35,
+            hi * 0.45,
+            (255, 255, 255, 140),
         )
 
     def draw_launcher_area(self, shooter_x, shooter_y):
@@ -945,41 +1012,6 @@ class UI:
         )
         arcade.draw_circle_filled(x + 20, y + 10, 3, arcade.color.WHITE)
         arcade.draw_circle_filled(x + 21, y + 10, 1, arcade.color.BLACK)
-
-    def draw_next_bubble(self, next_color):
-
-        nx = PLAYFIELD_LEFT + 78
-        ny = PLAYFIELD_BOTTOM - 88
-        preview_r = BUBBLE_RADIUS + 2
-
-        arcade.draw_lrbt_rectangle_filled(
-            nx - 42, nx + 18, ny - 32, ny + 38,
-            (95, 58, 32),
-        )
-
-        arcade.draw_polygon_filled(
-            [
-                (nx - 42, ny + 10),
-                (nx - 58, ny - 5),
-                (nx - 42, ny - 20),
-            ],
-            (75, 45, 25),
-        )
-
-        arcade.draw_text(
-            "NEXT",
-            nx - 12,
-            ny + 24,
-            arcade.color.CYAN,
-            15,
-            anchor_x="center",
-            bold=True,
-        )
-
-        arcade.draw_circle_filled(nx - 8, ny - 4, preview_r, next_color)
-        arcade.draw_circle_outline(
-            nx - 8, ny - 4, preview_r, arcade.color.WHITE, 2,
-        )
 
     def draw_danger_line(self, y):
 
