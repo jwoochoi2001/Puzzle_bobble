@@ -57,20 +57,26 @@ WALL_INNER_LEFT = PLAYFIELD_LEFT + BUBBLE_RADIUS
 WALL_INNER_RIGHT = PLAYFIELD_RIGHT - BUBBLE_RADIUS
 
 # 나도코딩 6_pointer_fire: radius = 18
-SHOOT_SPEED = 18
+SHOOT_SPEED = 26
 ANGLE_SPEED = 1.5
 POINTER_MIN_ANGLE = math.radians(10)
 POINTER_MAX_ANGLE = math.radians(170)
 
 DEAD_LINE_Y = PLAYFIELD_BOTTOM + 100
 
+# 천장: 발사 N회마다 1칸 하강 (시간 하강 없음)
+FIRE_COUNT = 8
+DROP_WARNING_SHOTS = 2
+
+# 8초 미발사 시 자동 발사, 남은 3초부터 Hurry up 표시
+AUTO_FIRE_SECONDS = 8.0
+AUTO_FIRE_WARN_SECONDS = 3.0
+
 MIN_MATCH = 3
 MAX_STAGE = 30
 MAX_LEVEL = 6
 MAX_DISPLAY_SCORE = 99999
 
-# 레벨별 스테이지 구간 (같은 레벨 = 같은 천장 속도)
-# 레벨1: 1~3, 레벨2: 4~9, 레벨3: 10~15, 레벨4: 16~21, 레벨5: 22~27, 레벨6: 28~30
 LEVEL_STAGE_END = {
     1: 3,
     2: 9,
@@ -120,16 +126,6 @@ FLOATING_BUBBLE_SCORE = 20
 
 # 연속 턴 매칭 시 추가 보너스 (2연속 +15, 3연속 +30 ...)
 COMBO_BONUS_PER_STEP = 15
-
-# 천장 하강 기본값 (단계가 올라갈수록 stage_ceiling_settings에서 감소)
-FIRE_COUNT = 7
-MIN_FIRE_COUNT = 4
-DROP_WARNING_SHOTS = 2
-
-CEILING_DROP_SECONDS = 28
-MIN_CEILING_DROP_SECONDS = 14
-DROP_WARNING_SECONDS = 6
-MIN_DROP_WARNING_SECONDS = 3
 
 # 공 터짐·낙하 연출
 POP_EFFECT_DURATION = 0.38
@@ -203,35 +199,9 @@ def stage_color_count(stage):
 
 def level_ceiling_settings(level):
 
-    """레벨별 천장 하강 속도 (같은 레벨은 동일)."""
-
-    level = min(max(level, 1), MAX_LEVEL)
-
-    if MAX_LEVEL <= 1:
-        t = 0.0
-    else:
-        t = (level - 1) / (MAX_LEVEL - 1)
-
-    fire_count = round(
-        FIRE_COUNT - t * (FIRE_COUNT - MIN_FIRE_COUNT),
-    )
-    drop_seconds = (
-        CEILING_DROP_SECONDS
-        - t * (CEILING_DROP_SECONDS - MIN_CEILING_DROP_SECONDS)
-    )
-    warning_seconds = (
-        DROP_WARNING_SECONDS
-        - t * (DROP_WARNING_SECONDS - MIN_DROP_WARNING_SECONDS)
-    )
-
     return {
-        "fire_count": max(MIN_FIRE_COUNT, fire_count),
-        "drop_seconds": max(MIN_CEILING_DROP_SECONDS, drop_seconds),
+        "fire_count": FIRE_COUNT,
         "warning_shots": DROP_WARNING_SHOTS,
-        "warning_seconds": max(
-            MIN_DROP_WARNING_SECONDS,
-            warning_seconds,
-        ),
     }
 
 
